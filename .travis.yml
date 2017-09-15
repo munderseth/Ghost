@@ -29,8 +29,9 @@ matrix:
   include:
     - node_js: "6"
       env: TEST_SUITE=lint
-  fast_finish: true
-
+    - node_js: "6"
+      env: TEST_SUITE=coverage DB=sqlite3 NODE_ENV=testing
+  
 branches:
   except:
     - /^greenkeeper-.+$/
@@ -54,18 +55,3 @@ after_script:
     else 
        testspace [Node-$TRAVIS_NODE_VERSION-$DB/]*-xunit.xml{core}
     fi 
-
-after_success:
-  - |
-      if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
-        if [[ "$DB" = "sqlite3" && "$TRAVIS_NODE_VERSION" = "6" ]]; then
-          echo "Generate coverage..."
-          grunt coverage
-          npm install -g codeclimate-test-reporter
-          codeclimate-test-reporter < core/test/coverage/unit/lcov.info
-        else
-          echo "False DB and NODE_VERSION. No coverage generated."
-        fi
-      else
-        echo "This is a PR. No coverage generated."
-      fi

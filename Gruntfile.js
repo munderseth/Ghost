@@ -100,7 +100,9 @@ var overrides      = require('./core/server/overrides'),
             // more information.
             jshint: {
                 options: {
-                    jshintrc: '.jshintrc'
+                    jshintrc: '.jshintrc',
+                    reporter: 'checkstyle',
+                    reporterOutput: 'jshint-checkstyle-result.xml'
                 },
 
                 server: [
@@ -116,7 +118,9 @@ var overrides      = require('./core/server/overrides'),
 
             jscs: {
                 options: {
-                    config: true
+                    config: true,
+                    reporter: 'checkstyle',
+                    reporterOutput: 'jshint-checkstyle-result.xml'
                 },
 
                 server: {
@@ -205,7 +209,8 @@ var overrides      = require('./core/server/overrides'),
                     options: {
                         mask: '**/*_spec.js',
                         coverageFolder: 'core/test/coverage/unit',
-                        mochaOptions: ['--timeout=15000', '--require', 'core/server/overrides'],
+                        reportFormats: ['cobertura', 'text-summary'],
+                        mochaOptions: ['--timeout=15000', '--require', 'core/server/overrides', '--reporter', 'xunit', '--reporter-options', 'output=xunit.xml'],
                         excludes: ['core/client', 'core/server/built']
                     }
                 },
@@ -219,7 +224,7 @@ var overrides      = require('./core/server/overrides'),
                     options: {
                         coverageFolder: 'core/test/coverage/all',
                         mask: '**/*_spec.js',
-                        mochaOptions: ['--timeout=15000', '--require', 'core/server/overrides'],
+                        mochaOptions: ['--timeout=30000', '--require', 'core/server/overrides', '--reporter', 'xunit', '--reporter-options', 'output=xunit.xml'],
                         excludes: ['core/client', 'core/server/built']
                     }
 
@@ -518,7 +523,9 @@ var overrides      = require('./core/server/overrides'),
             if (process.env.TEST_SUITE === 'lint') {
                 return grunt.task.run(['lint']);
             }
-
+            if (process.env.TEST_SUITE === 'coverage') {
+                return grunt.task.run(['coverage']);
+            }
             grunt.task.run(['test-all']);
         });
 
